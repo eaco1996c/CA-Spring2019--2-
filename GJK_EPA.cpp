@@ -6,7 +6,7 @@ SteerLib::GJK_EPA::GJK_EPA()
 }
 
 //Look at the GJK_EPA.h header file for documentation and instructions
-void getNearestEdge(std::vector<Util::Vector>& simplex, float& distance, Util::Vector& normal, int& index)
+void nearestEdge(std::vector<Util::Vector>& simplex, float& distance, Util::Vector& normal, int& index)
 
 {
 
@@ -40,7 +40,7 @@ void getNearestEdge(std::vector<Util::Vector>& simplex, float& distance, Util::V
 	}
 }
 
-int GetFarthestIndexInDirection(Util::Vector direction, const std::vector<Util::Vector>& ShapeA)
+int farthestIndex(Util::Vector direction, const std::vector<Util::Vector>& ShapeA)
 
 {
 	double Max = direction*ShapeA[0];
@@ -63,7 +63,7 @@ int GetFarthestIndexInDirection(Util::Vector direction, const std::vector<Util::
 
 
 
-bool CheckContainsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& simplex)
+bool containsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& simplex)
 
 {
 
@@ -83,8 +83,6 @@ bool CheckContainsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& sim
 		v3 = simplex[0];
 		v12 = v2 - v1;
 		v13 = v3 - v1;
-
-
 
 		Direction = Util::Vector(v12.z, v12.y, -1 * v12.x);
 
@@ -129,8 +127,6 @@ bool CheckContainsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& sim
 
 		Direction = Util::Vector(v12.z, v12.y, -1 * v12.x);
 
-
-
 		if (Direction * v1fromOri < 0)
 		{
 			Direction = -1 * Direction;
@@ -146,9 +142,9 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 
 	Util::Vector DirectionVector(1, 0, -1);
 	
-	Util::Vector FirstPoint = ShapeA[GetFarthestIndexInDirection(DirectionVector, ShapeA)];
+	Util::Vector FirstPoint = ShapeA[farthestIndex(DirectionVector, ShapeA)];
 	Util::Vector newDirection = -1 * DirectionVector;
-	Util::Vector SecondPoint = ShapeB[GetFarthestIndexInDirection(newDirection, ShapeB)];
+	Util::Vector SecondPoint = ShapeB[farthestIndex(newDirection, ShapeB)];
 	Util::Vector MDifference = FirstPoint - SecondPoint;
 
 	
@@ -160,9 +156,9 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 
 	while (true)
 	{
-		Util::Vector p1 = ShapeA[GetFarthestIndexInDirection(newDirection, ShapeA)];
+		Util::Vector p1 = ShapeA[farthestIndex(newDirection, ShapeA)];
 		Util::Vector new2 = -1 * newDirection;
-		Util::Vector p2 = ShapeB[GetFarthestIndexInDirection(new2, ShapeB)];
+		Util::Vector p2 = ShapeB[farthestIndex(new2, ShapeB)];
 		 MDifference = p1 - p2;
 		
 		simplex.push_back(MDifference);
@@ -175,7 +171,7 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 
 		else
 		{
-			if (CheckContainsOrigin(newDirection, simplex))
+			if (containsOrigin(newDirection, simplex))
 
 			{
 				return true;
@@ -197,12 +193,12 @@ bool EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector
 		int index;
 		Util::Vector normal;
 
-		getNearestEdge(simplex, distance, normal, index);
+		nearestEdge(simplex, distance, normal, index);
 
 
-		Util::Vector FirstPoint = ShapeA[GetFarthestIndexInDirection(normal, ShapeA)];
+		Util::Vector FirstPoint = ShapeA[farthestIndex(normal, ShapeA)];
 		Util::Vector newDirection = -1 * normal;
-		Util::Vector SecondPoint = ShapeB[GetFarthestIndexInDirection(newDirection, ShapeB)];
+		Util::Vector SecondPoint = ShapeB[farthestIndex(newDirection, ShapeB)];
 		Util::Vector sup = FirstPoint - SecondPoint;
 
 		float d = sup*normal;

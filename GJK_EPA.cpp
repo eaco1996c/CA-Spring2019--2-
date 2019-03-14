@@ -138,7 +138,7 @@ bool containsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& simplex)
 bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector>& ShapeB, std::vector<Util::Vector>& simplex)
 
 {
-
+	bool collide = true;
 	Util::Vector DirectionVector(1, 0, -1);
 	
 	Util::Vector FirstPoint = ShapeA[farthestIndex(DirectionVector, ShapeA)];
@@ -153,7 +153,7 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 
 
 
-	while (true)
+	while (collide==true)
 	{
 		Util::Vector p1 = ShapeA[farthestIndex(newDirection, ShapeA)];
 		Util::Vector new2 = -1 * newDirection;
@@ -165,7 +165,7 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 		if (simplex.back() * newDirection <= 0)
 
 		{
-			return false;
+		  collide = false;
 		}
 
 		else
@@ -173,7 +173,7 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 			if (containsOrigin(newDirection, simplex))
 
 			{
-				return true;
+			 collide = true;
 			}
 		}
 	}

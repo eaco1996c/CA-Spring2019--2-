@@ -9,12 +9,11 @@ SteerLib::GJK_EPA::GJK_EPA()
 void nearestEdge(std::vector<Util::Vector>& simplex, float& distance, Util::Vector& normal, int& index)
 
 {
-
 	distance = FLOAT_MAX;
 	int i;
 	for (int j = 0; j < simplex.size(); j++)
 	{
-		
+	
 		if (j + 1 == simplex.size())
 			i = 0;
 		else
@@ -44,20 +43,20 @@ int farthestIndex(Util::Vector direction, const std::vector<Util::Vector>& Shape
 
 {
 	double Max = direction*ShapeA[0];
-	int Farthest = 0;
+	int far = 0;
 
 	for (unsigned int i = 1; i < ShapeA.size(); i++)
 
 	{
-		double CurrentDot = direction*ShapeA[i];
+		double currentDot = direction*ShapeA[i];
 
-		if (CurrentDot>Max)
+		if (Max<currentDot)
 		{
-			Max = CurrentDot;
-			Farthest = i;
+			Max = currentDot;
+			far = i;
 		}
 	}
-	return Farthest;
+	return far;
 }
 
 
@@ -189,30 +188,31 @@ bool EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector
 	while (true)
 
 	{
-		float distance;
 		int index;
+		float distance;
 		Util::Vector normal;
 
 		nearestEdge(simplex, distance, normal, index);
 
 
-		Util::Vector FirstPoint = ShapeA[farthestIndex(normal, ShapeA)];
+		Util::Vector p1 = ShapeA[farthestIndex(normal, ShapeA)];
 		Util::Vector newDirection = -1 * normal;
-		Util::Vector SecondPoint = ShapeB[farthestIndex(newDirection, ShapeB)];
-		Util::Vector sup = FirstPoint - SecondPoint;
+		Util::Vector p2= ShapeB[farthestIndex(newDirection, ShapeB)];
+		Util::Vector sup = p1 - p2;
 
-		float d = sup*normal;
-		if (d - distance <= 0)
+		float dist = sup*normal;
+		if (dist - distance <= 0)
 		{
-			penetration_vector = normal;
+			
 			penetration_depth = distance;
+			penetration_vector = normal;
 			return true;
 		}
 
 		else
 
 		{
-			simplex.insert(simplex.begin() + index, sup);
+			simples.insert(simplex.begin() + index, sup);
 
 		}
 
@@ -225,10 +225,10 @@ bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector&
 {
 	
 	std::vector<Util::Vector> simplex;
-	bool InACollision = GJK(_shapeA, _shapeB, simplex);
-	if (InACollision)
+	bool collide = GJK(_shapeA, _shapeB, simplex);
+	if (collide)
 	{
 		EPA(_shapeA, _shapeB, simplex, return_penetration_depth, return_penetration_vector);
 	}
-	return InACollision;
+	return collide;
 }

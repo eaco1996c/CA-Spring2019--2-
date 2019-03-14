@@ -158,14 +158,14 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 		Util::Vector p1 = ShapeA[farthestIndex(newDirection, ShapeA)];
 		Util::Vector new2 = -1 * newDirection;
 		Util::Vector p2 = ShapeB[farthestIndex(new2, ShapeB)];
-		 MDifference = p1 - p2;
+		MDifference = p1 - p2;
 		
 		simplex.push_back(MDifference);
 
 		if (simplex.back() * newDirection <= 0)
 
 		{
-		  collide = false;
+		 return collide = false;
 		}
 
 		else
@@ -173,7 +173,7 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 			if (containsOrigin(newDirection, simplex))
 
 			{
-			 collide = true;
+			return collide = true;
 			}
 		}
 	}
@@ -184,8 +184,8 @@ bool GJK(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector
 bool EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, std::vector<Util::Vector>& simplex, float& penetration_depth, Util::Vector& penetration_vector)
 
 {
-
-	while (true)
+	bool collide = true;
+	while (collide=true)
 
 	{
 		int index;
@@ -206,7 +206,7 @@ bool EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector
 			
 			penetration_depth = distance;
 			penetration_vector = normal;
-			return true;
+			return collide=true;
 		}
 
 		else
